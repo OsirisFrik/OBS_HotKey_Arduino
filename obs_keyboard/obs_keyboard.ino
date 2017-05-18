@@ -1,5 +1,5 @@
 // OBS HotKeys arduino keyboard
-// Make by OsirisFrik
+// Made by OsirisFrik
 // Twitter & Twitch OsirisFrik
 // Git https://github.com/OsirisFrik/OBS_HotKey_Arduino
 
