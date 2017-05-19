@@ -1,4 +1,4 @@
-// OBS HotKeys arduino keyboard v1.4
+// OBS HotKeys arduino keyboard v1.5.2
 // Made by OsirisFrik
 // Twitter & Twitch OsirisFrik
 // Git https://github.com/OsirisFrik/OBS_HotKey_Arduino
@@ -13,9 +13,11 @@ int buttonC = 0;
 const int ledYellow = 12;
 const int ledGreen = 11;
 const int ledRed = 10;
+const int ledBlue = 9;
 
 int state = 0;
-int onAir = 0;
+bool onAir = false;
+bool mode = true;
 
 void setup() {
   // put your setup code here, to run once:
@@ -27,6 +29,7 @@ void setup() {
   pinMode(ledYellow, OUTPUT);
   pinMode(ledGreen, OUTPUT);
   pinMode(ledRed, OUTPUT);
+  pinMode(ledBlue, OUTPUT);
   
   Keyboard.begin();
 }
@@ -38,60 +41,77 @@ void loop() {
   buttonB = digitalRead(4);
   buttonC = digitalRead(5);
 
-  if (buttonC == 0){
-    //Keyboard.press(0x80);
+  if (buttonA == 0){    
+    digitalWrite(ledBlue, HIGH);    
     Keyboard.press(0x80);
     Keyboard.press(0x81);
     Keyboard.press('t');
-    delay(100);
-    Keyboard.releaseAll();
-    if (onAir == 1){
-      onAir = 0;
+    if (onAir == true){
+      onAir = false;      
+      digitalWrite(ledRed, LOW);
+      delay(500);
     } else {
-      onAir = 1;
-    }
-  }
-  
-  if (state == 0){
-    digitalWrite(ledYellow, HIGH);
-    digitalWrite(ledGreen, LOW);
-    if (buttonA == 0){ 
-      Keyboard.press(0x80);     
-      Keyboard.press(0x81);
-      Keyboard.press('m'); // "M"
-      delay(100); // Delay 100 ms
-      Keyboard.releaseAll(); // unpress all keys
-    } else if (buttonB ==0) {
-      Keyboard.press(0x80);
-      Keyboard.press(0x81);
-      Keyboard.press('b'); // Num 1
-      delay(100); // Delay 100 ms
-      Keyboard.releaseAll(); // unpress all keys
-    }
-    delay(100);
-  } else {
-    digitalWrite(ledYellow, LOW);
-    digitalWrite(ledGreen, HIGH);
-    if (buttonA == 0){ 
-      Keyboard.press(0x80);
-      Keyboard.press(0x81);     
-      Keyboard.press('1'); // Num 1
-      delay(100); // Delay 100 ms
-      Keyboard.releaseAll(); // unpress all keys
-    } else if (buttonB == 0) {
-      Keyboard.press(0x80);
-      Keyboard.press(0x81);
-      Keyboard.press('2'); // Num 2
-      delay(50); // Delay 100 ms
-      Keyboard.releaseAll(); // unpress all keys
-    }
-    delay(100);
+      onAir = true;      
+      digitalWrite(ledRed, HIGH);
+      delay(500);
+    }    
+    Keyboard.release(0x80);
+    Keyboard.release(0x81);
+    Keyboard.release('t');
+    digitalWrite(ledBlue, LOW);
   }
 
-  if (onAir != 0){
-    digitalWrite(ledRed, LOW);
-    delay(100);
+  if (state == 0) {
+    digitalWrite(ledGreen, HIGH);
+    digitalWrite(ledYellow, LOW);
+    delayMicroseconds(50);
+    mode = true;
   } else {
-    digitalWrite(ledRed, HIGH);
+    digitalWrite(ledGreen, LOW);
+    digitalWrite(ledYellow, HIGH);
+    delay(100);
+    mode = false;
+  }
+
+  if (buttonB == 0){
+    digitalWrite(ledBlue, HIGH);
+    if (mode == false){
+      Keyboard.press(0x80);
+      Keyboard.press(0x81);
+      Keyboard.press('1');
+      delay(200);
+      Keyboard.release(0x80);
+      Keyboard.release(0x81);
+      Keyboard.release('1');
+    } else {
+      Keyboard.press(0x80);
+      Keyboard.press(0x81);
+      Keyboard.press('m');
+      delay(200);
+      Keyboard.release(0x80);
+      Keyboard.release(0x81);
+      Keyboard.release('m');
+    }
+    digitalWrite(ledBlue, LOW);
+  } else if (buttonC == 0){
+    digitalWrite(ledBlue, HIGH);
+    if (mode == false){
+      Keyboard.press(0x80);
+      Keyboard.press(0x81);
+      Keyboard.press('2');
+      delay(200);
+      Keyboard.release(0x80);
+      Keyboard.release(0x81);
+      Keyboard.release('2');
+    } else {
+      Keyboard.press(0x80);
+      Keyboard.press(0x81);
+      Keyboard.press('b');
+      delay(200);
+      Keyboard.release(0x80);
+      Keyboard.release(0x81);
+      Keyboard.release('b');
+    }
+    digitalWrite(ledBlue, LOW);
   }
 }
